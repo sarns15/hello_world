@@ -25,7 +25,7 @@ config :wallaby,
   driver: Wallaby.Chrome,
   otp_app: :hello_world,
   chromedriver: [
-    headless: false
+    headless: true
   ]
 
 config :hello_world, :sandbox, Ecto.Adapters.SQL.Sandbox
