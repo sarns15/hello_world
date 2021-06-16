@@ -16,7 +16,16 @@ config :hello_world, HelloWorld.Repo,
 # you can enable the server option below.
 config :hello_world, HelloWorldWeb.Endpoint,
   http: [port: 4002],
-  server: false
+  server: true
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :wallaby,
+  driver: Wallaby.Chrome,
+  otp_app: :hello_world,
+  chromedriver: [
+    headless: false
+  ]
+
+config :hello_world, :sandbox, Ecto.Adapters.SQL.Sandbox
