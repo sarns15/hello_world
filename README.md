@@ -1,5 +1,5 @@
 # HelloWorld
-
+![example workflow](https://github.com/atuley/hello_world/actions/workflows/elixir.yml/badge.svg)
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
