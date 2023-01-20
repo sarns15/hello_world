@@ -1,0 +1,51 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    env:
+      MIX_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hello_world_test
+        image: postgres:11
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Elixir
+      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      with:
+        elixir-version: '1.12.0'
+        otp-version: '22.3'
+    - name: Restore dependencies cache
+      uses: actions/cache@v2
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    - uses: nanasess/setup-chromedriver@master
+    - name: Install Dependencies
+      run: mix deps.get
+    - run: mix compile
+    - run: mix ecto.migrate
+    - run: npm install
+      working-directory: ./assets
+    - run: npm run deploy --prefix ./assets
+    - name: Run tests
+      run: mix test --trace
